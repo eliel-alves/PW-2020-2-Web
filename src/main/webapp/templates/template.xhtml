@@ -16,8 +16,20 @@
                 <p:submenu label="Cadastros" icon="pi pi-plus-circle">
                     <p:column>
                         <p:submenu label="Básicos">
-                            <p:menuitem action="#{controleEstado.listar()}" value="Manutenção de Estados" ajax="false"/>
-                            <p:menuitem action="#{controleCidade.listar()}" value="Manutenção de Cidades" ajax="false"/>
+                            <p:menuitem action="#{controleEstado.listar()}"
+                                        value="Manutenção de Estados"
+                                        ajax="false"/>
+                            <p:menuitem action="#{controleCidade.listar()}"
+                                        value="Manutenção de Cidades"
+                                        ajax="false"/>
+                        </p:submenu>
+                    </p:column>
+                    
+                    <p:column>
+                        <p:submenu label="Time">
+                            <p:menuitem action="#{controleTime.listar()}"
+                                        value="Manutenção de Times"
+                                        ajax="false"/>
                         </p:submenu>
                     </p:column>
                 </p:submenu>

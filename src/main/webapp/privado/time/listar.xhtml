@@ -6,7 +6,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <ui:composition template="/templates/template.xhtml">
-        <ui:define name="titulo">Manutenção de Cidades</ui:define>
+        <ui:define name="titulo">Manutenção de Times</ui:define>
         <ui:define name="conteudo">
 
             <h:form id="formListagem" prependId="false">
@@ -14,7 +14,7 @@
 
                 <div style="margin: 20px 0;" align="right">
                     <p:commandButton value="Adicionar"
-                                     actionListener="#{controleCidade.novo()}"
+                                     actionListener="#{controleTime.novo()}"
                                      icon="pi pi-plus"
                                      update="formEdicao"
                                      process="@this"
@@ -24,19 +24,19 @@
                 <div align="center">
                     <p:panelGrid columns="11">
                         <p:outputLabel value="Ordem:"/>
-                        <p:selectOneMenu value="#{controleCidade.dao.ordemAtual}"
-                                         converter="#{controleCidade.dao.converterOrdem}">
-                            <f:selectItems value="#{controleCidade.dao.listaOrdem}" var="ord"
+                        <p:selectOneMenu value="#{controleTime.dao.ordemAtual}"
+                                         converter="#{controleTime.dao.converterOrdem}">
+                            <f:selectItems value="#{controleTime.dao.listaOrdem}" var="ord"
                                            itemValue="#{ord.atributo}"/>
                             <p:ajax update="listagem"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="Filtro: "/>
-                        <p:inputText value="#{controleCidade.dao.filtro}">
+                        <p:inputText value="#{controleTime.dao.filtro}">
                             <p:ajax event="blur" update="listagem"/>
                         </p:inputText>
                         <p:commandButton value="Filtrar" update="listagem"/>
                         <p:outputLabel value="Máximo de objetos: "/>
-                        <p:selectOneMenu value="#{controleCidade.dao.maximoObjetos}">
+                        <p:selectOneMenu value="#{controleTime.dao.maximoObjetos}">
                             <f:selectItem itemValue="3" itemLabel="3"/>
                             <f:selectItem itemValue="5" itemLabel="5"/>
                             <f:selectItem itemValue="10" itemLabel="10"/>
@@ -44,31 +44,31 @@
                             <f:selectItem itemValue="50" itemLabel="50"/>
                             <p:ajax update="listagem"/>
                         </p:selectOneMenu>
-                        <p:commandButton action="#{controleCidade.dao.primeiro()}"
+                        <p:commandButton action="#{controleTime.dao.primeiro()}"
                                          title="Primeiro" update="listagem"
                                          icon="pi pi-step-backward"/>
 
-                        <p:commandButton action="#{controleCidade.dao.anterior()}"
+                        <p:commandButton action="#{controleTime.dao.anterior()}"
                                          title="Anterior" update="listagem"
                                          icon="pi pi-chevron-left"/>
 
-                        <p:commandButton action="#{controleCidade.dao.proximo()}"
+                        <p:commandButton action="#{controleTime.dao.proximo()}"
                                          title="Próximo" update="listagem"
                                          icon="pi pi-chevron-right"/>
 
-                        <p:commandButton action="#{controleCidade.dao.ultimo()}"
+                        <p:commandButton action="#{controleTime.dao.ultimo()}"
                                          title="Último" update="listagem"
                                          icon="pi pi-step-forward"/>
                     </p:panelGrid>
                 </div>
 
-                <p:dataTable value="#{controleCidade.dao.listaObjetos}" var="obj"
+                <p:dataTable value="#{controleTime.dao.listaObjetos}" var="obj"
                              id="listagem">
                     <f:facet name="header">
-                        <div style="text-align: center;">Lista de Todos os Cidades</div>
+                        <div style="text-align: center;">Lista de Todos os Times</div>
                     </f:facet>
                     <f:facet name="footer">
-                        <p:outputLabel value="#{controleCidade.dao.mensagemNavegacao()}"/>
+                        <p:outputLabel value="#{controleTime.dao.mensagemNavegacao()}"/>
                     </f:facet>
                     <p:column headerText="ID">
                         <p:outputLabel value="#{obj.id}"/>
@@ -78,19 +78,29 @@
                         <p:outputLabel value="#{obj.nome}"/>
                     </p:column>
 
-                    <p:column headerText="Estado">
-                        <p:outputLabel value="#{obj.estado.nome}"/>
+                    <p:column headerText="Data Fundação">
+                        <p:outputLabel value="#{obj.dataFundacao}">
+                            <f:converter converterId="converterCalendar"/>
+                        </p:outputLabel>
+                    </p:column>
+                    
+                    <p:column headerText="Cidade">
+                        <p:outputLabel value="#{obj.cidade.nome}"/>
+                    </p:column>
+                    
+                    <p:column headerText="Técnico">
+                        <p:outputLabel value="#{obj.tecnico.nome}"/>
                     </p:column>
 
                     <p:column style="text-align: center;" headerText="Ações">
                         <div align="center">
-                            <p:commandButton style="margin-right: 5px;" actionListener="#{controleCidade.alterar(obj.id)}"
+                            <p:commandButton style="margin-right: 5px;" actionListener="#{controleTime.alterar(obj.id)}"
                                              icon="pi pi-pencil"
                                              title="Editar"
                                              update="formEdicao"
                                              process="@this"
                                              oncomplete="PF('dlg').show()"/>
-                            <p:commandButton actionListener="#{controleCidade.excluir(obj.id)}"
+                            <p:commandButton actionListener="#{controleTime.excluir(obj.id)}"
                                              icon="pi pi-trash"
                                              update="@form"
                                              process="@this"
@@ -100,45 +110,8 @@
                     </p:column>
                 </p:dataTable>
             </h:form>
-
-            <p:dialog header="Edição" widgetVar="dlg" resizable="false"
-                      modal="true" width="50%" height="100%">
-                <h:form id="formEdicao" prependId="false">
-                    <p:growl/>
-                    <div align="center">
-                        <p:panelGrid columns="2">
-                            <p:outputLabel value="ID"/>
-                            <p:inputText validator="#{controleCidade.objeto.id}" size="5" readonly="true"/>
-
-                            <p:outputLabel value="Nome" for="txtNome"/>
-                            <p:inputText id="txtNome" required="true"
-                                         value="#{controleCidade.objeto.nome}"
-                                         size="25" maxlength="50"
-                                         placeholder="Obrigatório"/>
-
-                            <p:outputLabel value="Cidade" for="selectCidade"/>
-                            <p:selectOneMenu value="#{controleCidade.objeto.estado}"
-                                             id="selectCidade"
-                                             filter="true"
-                                             filterMatchMode="startsWith">
-                                <f:selectItem noSelectionOption="true" itemLabel="Selecone um registro"/>
-                                <f:converter binding="#{converterEstado}"/>
-                                <f:selectItems value="#{controleCidade.daoEstado.listaTodos}"
-                                               var="est" itemLabel="#{est.nome}" />
-                            </p:selectOneMenu>
-
-                        </p:panelGrid>
-                    </div>
-                    <p:panel>
-                        <div align="center">
-                            <p:commandButton value="Salvar" icon="pi pi-save"
-                                             actionListener="#{controleCidade.salvar()}"
-                                             update="formEdicao formListagem"
-                                             oncomplete="if(!args.validationFailed){PF('dlg').hide();}"/>
-                        </div>
-                    </p:panel>
-                </h:form>
-            </p:dialog>
+            <ui:include src="formulario.xhtml"/>
+            
         </ui:define>
     </ui:composition>
 </html>
