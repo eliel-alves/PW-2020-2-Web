@@ -12,7 +12,7 @@
             <h:form id="formListagem" prependId="false">
                 <p:growl/>
 
-                <div style="margin: 20px 0;" align="right">
+                <div style="margin: 20px 0;">
                     <p:commandButton value="Adicionar"
                                      actionListener="#{controleCidade.novo()}"
                                      icon="pi pi-plus"
@@ -102,41 +102,60 @@
             </h:form>
 
             <p:dialog header="Edição" widgetVar="dlg" resizable="false"
-                      modal="true" width="50%" height="100%">
+                      modal="true" width="35%" height="100%">
                 <h:form id="formEdicao" prependId="false">
                     <p:growl/>
-                    <div align="center">
-                        <p:panelGrid columns="2">
-                            <p:outputLabel value="ID"/>
-                            <p:inputText validator="#{controleCidade.objeto.id}" size="5" readonly="true"/>
+                    <p:outputPanel class="ui-fluid">
 
-                            <p:outputLabel value="Nome" for="txtNome"/>
-                            <p:inputText id="txtNome" required="true"
-                                         value="#{controleCidade.objeto.nome}"
-                                         size="25" maxlength="50"
-                                         placeholder="Obrigatório"/>
-
-                            <p:outputLabel value="Cidade" for="selectCidade"/>
-                            <p:selectOneMenu value="#{controleCidade.objeto.estado}"
-                                             id="selectCidade"
-                                             filter="true"
-                                             filterMatchMode="startsWith">
-                                <f:selectItem noSelectionOption="true" itemLabel="Selecone um registro"/>
-                                <f:converter binding="#{converterEstado}"/>
-                                <f:selectItems value="#{controleCidade.daoEstado.listaTodos}"
-                                               var="est" itemLabel="#{est.nome}" />
-                            </p:selectOneMenu>
-
-                        </p:panelGrid>
-                    </div>
-                    <p:panel>
-                        <div align="center">
-                            <p:commandButton value="Salvar" icon="pi pi-save"
-                                             actionListener="#{controleCidade.salvar()}"
-                                             update="formEdicao formListagem"
-                                             oncomplete="if(!args.validationFailed){PF('dlg').hide();}"/>
+                        <div class="p-formgroup p-grid">
+                            <div class="p-field p-col">
+                                <p:outputLabel value="Nome" for="txtNome"/>
+                                <p:inputText id="txtNome"
+                                             value="#{controleCidade.objeto.nome}"
+                                             maxlength="50"
+                                             placeholder="Obrigatório"/>
+                            </div>
+                            <div class="p-field p-col-6">
+                                <p:outputLabel value="Cidade" for="selectCidade"/>
+                                <p:selectOneMenu value="#{controleCidade.objeto.estado}"
+                                                 id="selectCidade"
+                                                 filter="true"
+                                                 filterMatchMode="startsWith">
+                                    <f:selectItem noSelectionOption="true" itemLabel="Selecione um registro"/>
+                                    <f:converter binding="#{converterEstado}"/>
+                                    <f:selectItems value="#{controleCidade.daoEstado.listaTodos}"
+                                                   var="est" itemLabel="#{est.nome}" />
+                                </p:selectOneMenu>
+                            </div>
                         </div>
-                    </p:panel>
+
+                        <p:toolbar>
+                            <p:toolbarGroup>
+                                <p:outputLabel class="p-pr-2" value="ID: "
+                                               rendered="#{controleCidade.objeto.id != null}"/>
+                                <p:badge value="#{controleCidade.objeto.id}"
+                                         rendered="#{controleCidade.objeto.id != null}"
+                                         styleClass="p-mr-2"></p:badge>
+                            </p:toolbarGroup>
+
+                            <p:toolbarGroup align="right">
+                                <div class="p-formgroup-inline">
+                                    <div class="p-field p-mb-0">
+                                        <p:commandButton value="Salvar" icon="pi pi-save"
+                                                         actionListener="#{controleCidade.salvar()}"
+                                                         update="formEdicao formListagem"
+                                                         oncomplete="if(!args.validationFailed){PF('dlg').hide();}"/>
+                                    </div>
+                                    <div class="p-field p-mb-0 p-mr-0">
+                                        <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('dlg').hide()"
+                                                         class="ui-button-secondary" update="formEdicao" process="@this">
+                                            <p:resetInput target="formEdicao"/>
+                                        </p:commandButton>
+                                    </div>
+                                </div>
+                            </p:toolbarGroup>
+                        </p:toolbar>
+                    </p:outputPanel>
                 </h:form>
             </p:dialog>
         </ui:define>

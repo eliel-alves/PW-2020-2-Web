@@ -9,6 +9,7 @@ import br.edu.ifsul.converters.ConverterOrdem;
 import br.edu.ifsul.modelo.Usuario;
 import java.io.Serializable;
 import javax.ejb.Stateful;
+import javax.persistence.Query;
 
 /**
  *
@@ -27,11 +28,32 @@ public class UsuarioDAO<TIPO> extends DAOGenerico<Usuario> implements Serializab
         listaOrdem.add(new Ordem("email", "E-mail", "like"));
         
         // definir a ordem inicial
-        ordemAtual = listaOrdem.get(1);
+        ordemAtual = listaOrdem.get(0);
         
         //inicializa o conversor das ordens
         converterOrdem = new ConverterOrdem();
         converterOrdem.setListaOrdem(listaOrdem);
     }
     
+    @Override
+    public Usuario getObjectByID(Object id) throws Exception {
+        Usuario obj = em.find(Usuario.class, id);
+        // uso para evitar o erro de lazy inicialization exception
+        obj.getPermissoes().size();
+        return obj;
+    }
+    
+    public boolean usuarioExiste(String nomeUsuario) throws Exception {       
+            // query buscando nomes de usuário igual ao informado
+            String jpql = "from Usuario where nomeUsuario = :pNomeUsuario";
+            Query query = em.createQuery(jpql);
+            query.setParameter("pNomeUsuario", nomeUsuario);
+            
+            // se resultado maior q 0 encontrou usuário
+            if (query.getResultList().size() > 0){
+                return true;
+            } else { // caso contrário usuario não existe
+                return false;
+            }       
+    }
 }

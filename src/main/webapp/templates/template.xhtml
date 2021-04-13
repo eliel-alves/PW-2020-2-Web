@@ -7,6 +7,7 @@
     <h:head>
         <title><ui:insert name="titulo"></ui:insert></title>
         <h:outputStylesheet library="css" name="estilos.css"/>
+        <h:outputStylesheet library="css" name="primeflex.css"/>
         <h:outputScript library="js" name="scripts.js"/>
     </h:head>
     <h:body>
@@ -22,6 +23,9 @@
                             <p:menuitem action="#{controleCidade.listar()}"
                                         value="Manutenção de Cidades"
                                         ajax="false"/>
+                            <p:menuitem action="#{controlePermissao.listar()}"
+                                        value="Manutenção de Permissões"
+                                        ajax="false"/>
                         </p:submenu>
                     </p:column>
                     
@@ -29,6 +33,15 @@
                         <p:submenu label="Time">
                             <p:menuitem action="#{controleTime.listar()}"
                                         value="Manutenção de Times"
+                                        ajax="false"/>
+                            <p:menuitem action="#{controlePosicao.listar()}"
+                                        value="Manutenção de Posições"
+                                        ajax="false"/>
+                        </p:submenu>
+                        
+                        <p:submenu label="Usuário">
+                            <p:menuitem action="#{controleUsuario.listar()}"
+                                        value="Manutenção de Usuários"
                                         ajax="false"/>
                         </p:submenu>
                     </p:column>

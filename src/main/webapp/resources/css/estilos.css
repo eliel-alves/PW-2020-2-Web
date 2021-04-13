@@ -15,3 +15,11 @@ body {
 .ui-menu.ui-megamenu .ui-menu-child .ui-menu-list {
     width: 230px !important;
 }
+
+body .ui-tabs .ui-tabs-panels .ui-tabs-panel {
+    padding: 1rem 0;
+}
+
+.txtpass {
+    width: 100% !important;
+}

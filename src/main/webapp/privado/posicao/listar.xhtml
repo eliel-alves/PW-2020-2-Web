@@ -6,7 +6,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <ui:composition template="/templates/template.xhtml">
-        <ui:define name="titulo">Manutenção de Estados</ui:define>
+        <ui:define name="titulo">Manutenção de Posições</ui:define>
         <ui:define name="conteudo">
 
             <h:form id="formListagem" prependId="false">
@@ -14,7 +14,7 @@
 
                 <div style="margin: 20px 0;">
                     <p:commandButton value="Adicionar"
-                                     actionListener="#{controleEstado.novo()}"
+                                     actionListener="#{controlePosicao.novo()}"
                                      icon="pi pi-plus"
                                      update="formEdicao"
                                      process="@this"
@@ -24,19 +24,19 @@
                 <div align="center">
                     <p:panelGrid columns="11">
                         <p:outputLabel value="Ordem:"/>
-                        <p:selectOneMenu value="#{controleEstado.dao.ordemAtual}"
-                                         converter="#{controleEstado.dao.converterOrdem}">
-                            <f:selectItems value="#{controleEstado.dao.listaOrdem}" var="ord"
+                        <p:selectOneMenu value="#{controlePosicao.dao.ordemAtual}"
+                                         converter="#{controlePosicao.dao.converterOrdem}">
+                            <f:selectItems value="#{controlePosicao.dao.listaOrdem}" var="ord"
                                            itemValue="#{ord.atributo}"/>
                             <p:ajax update="listagem"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="Filtro: "/>
-                        <p:inputText value="#{controleEstado.dao.filtro}">
+                        <p:inputText value="#{controlePosicao.dao.filtro}">
                             <p:ajax event="blur" update="listagem"/>
                         </p:inputText>
                         <p:commandButton value="Filtrar" update="listagem"/>
                         <p:outputLabel value="Máximo de objetos: "/>
-                        <p:selectOneMenu value="#{controleEstado.dao.maximoObjetos}">
+                        <p:selectOneMenu value="#{controlePosicao.dao.maximoObjetos}">
                             <f:selectItem itemValue="3" itemLabel="3"/>
                             <f:selectItem itemValue="5" itemLabel="5"/>
                             <f:selectItem itemValue="10" itemLabel="10"/>
@@ -44,31 +44,31 @@
                             <f:selectItem itemValue="50" itemLabel="50"/>
                             <p:ajax update="listagem"/>
                         </p:selectOneMenu>
-                        <p:commandButton action="#{controleEstado.dao.primeiro()}"
+                        <p:commandButton action="#{controlePosicao.dao.primeiro()}"
                                          title="Primeiro" update="listagem"
                                          icon="pi pi-step-backward"/>
 
-                        <p:commandButton action="#{controleEstado.dao.anterior()}"
+                        <p:commandButton action="#{controlePosicao.dao.anterior()}"
                                          title="Anterior" update="listagem"
                                          icon="pi pi-chevron-left"/>
 
-                        <p:commandButton action="#{controleEstado.dao.proximo()}"
+                        <p:commandButton action="#{controlePosicao.dao.proximo()}"
                                          title="Próximo" update="listagem"
                                          icon="pi pi-chevron-right"/>
 
-                        <p:commandButton action="#{controleEstado.dao.ultimo()}"
+                        <p:commandButton action="#{controlePosicao.dao.ultimo()}"
                                          title="Último" update="listagem"
                                          icon="pi pi-step-forward"/>
                     </p:panelGrid>
                 </div>
 
-                <p:dataTable value="#{controleEstado.dao.listaObjetos}" var="obj"
+                <p:dataTable value="#{controlePosicao.dao.listaObjetos}" var="obj"
                              id="listagem">
                     <f:facet name="header">
-                        <div style="text-align: center;">Lista de Todos os Estados</div>
+                        <div style="text-align: center;">Lista de Todos os Posicaos</div>
                     </f:facet>
                     <f:facet name="footer">
-                        <p:outputLabel value="#{controleEstado.dao.mensagemNavegacao()}"/>
+                        <p:outputLabel value="#{controlePosicao.dao.mensagemNavegacao()}"/>
                     </f:facet>
                     <p:column headerText="ID">
                         <p:outputLabel value="#{obj.id}"/>
@@ -78,19 +78,15 @@
                         <p:outputLabel value="#{obj.nome}"/>
                     </p:column>
 
-                    <p:column headerText="UF">
-                        <p:outputLabel value="#{obj.uf}"/>
-                    </p:column>
-
                     <p:column style="text-align: center;" headerText="Ações">
                         <div align="center">
-                            <p:commandButton style="margin-right: 5px;" actionListener="#{controleEstado.alterar(obj.id)}"
+                            <p:commandButton style="margin-right: 5px;" actionListener="#{controlePosicao.alterar(obj.id)}"
                                              icon="pi pi-pencil"
                                              title="Editar"
                                              update="formEdicao"
                                              process="@this"
                                              oncomplete="PF('dlg').show()"/>
-                            <p:commandButton actionListener="#{controleEstado.excluir(obj.id)}"
+                            <p:commandButton actionListener="#{controlePosicao.excluir(obj.id)}"
                                              icon="pi pi-trash"
                                              update="@form"
                                              process="@this"
@@ -110,26 +106,18 @@
                             <div class="p-field p-col">
                                 <p:outputLabel value="Nome" for="txtNome"/>
                                 <p:inputText id="txtNome" required="true"
-                                             value="#{controleEstado.objeto.nome}"
+                                             value="#{controlePosicao.objeto.nome}"
                                              maxlength="50"
                                              placeholder="Obrigatório"/>
-                            </div>
-                            <div class="p-field p-col-2">
-
-                                <p:outputLabel value="UF" for="txtUF"/>
-                                <p:inputText id="txtUF" required="true"
-                                             oninput="value=value.toUpperCase()"
-                                             value="#{controleEstado.objeto.uf}"
-                                             maxlength="2"/>
                             </div>
                         </div>
 
                         <p:toolbar>
                             <p:toolbarGroup>
                                 <p:outputLabel class="p-pr-2" value="ID: "
-                                               rendered="#{controleEstado.objeto.id != null}"/>
-                                <p:badge value="#{controleEstado.objeto.id}"
-                                         rendered="#{controleEstado.objeto.id != null}"
+                                               rendered="#{controlePosicao.objeto.id != null}"/>
+                                <p:badge value="#{controlePosicao.objeto.id}"
+                                         rendered="#{controlePosicao.objeto.id != null}"
                                          styleClass="p-mr-2"></p:badge>
                             </p:toolbarGroup>
 
@@ -137,7 +125,7 @@
                                 <div class="p-formgroup-inline">
                                     <div class="p-field p-mb-0">
                                         <p:commandButton value="Salvar" icon="pi pi-save"
-                                                         actionListener="#{controleEstado.salvar()}"
+                                                         actionListener="#{controlePosicao.salvar()}"
                                                          update="formEdicao formListagem"
                                                          oncomplete="if(!args.validationFailed){PF('dlg').hide();}"/>
                                     </div>

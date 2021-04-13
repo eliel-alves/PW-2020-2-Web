@@ -6,7 +6,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <ui:composition template="/templates/template.xhtml">
-        <ui:define name="titulo">Manutenção de Estados</ui:define>
+        <ui:define name="titulo">Manutenção de Permissões</ui:define>
         <ui:define name="conteudo">
 
             <h:form id="formListagem" prependId="false">
@@ -14,7 +14,7 @@
 
                 <div style="margin: 20px 0;">
                     <p:commandButton value="Adicionar"
-                                     actionListener="#{controleEstado.novo()}"
+                                     actionListener="#{controlePermissao.novo()}"
                                      icon="pi pi-plus"
                                      update="formEdicao"
                                      process="@this"
@@ -24,19 +24,19 @@
                 <div align="center">
                     <p:panelGrid columns="11">
                         <p:outputLabel value="Ordem:"/>
-                        <p:selectOneMenu value="#{controleEstado.dao.ordemAtual}"
-                                         converter="#{controleEstado.dao.converterOrdem}">
-                            <f:selectItems value="#{controleEstado.dao.listaOrdem}" var="ord"
+                        <p:selectOneMenu value="#{controlePermissao.dao.ordemAtual}"
+                                         converter="#{controlePermissao.dao.converterOrdem}">
+                            <f:selectItems value="#{controlePermissao.dao.listaOrdem}" var="ord"
                                            itemValue="#{ord.atributo}"/>
                             <p:ajax update="listagem"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="Filtro: "/>
-                        <p:inputText value="#{controleEstado.dao.filtro}">
+                        <p:inputText value="#{controlePermissao.dao.filtro}">
                             <p:ajax event="blur" update="listagem"/>
                         </p:inputText>
                         <p:commandButton value="Filtrar" update="listagem"/>
                         <p:outputLabel value="Máximo de objetos: "/>
-                        <p:selectOneMenu value="#{controleEstado.dao.maximoObjetos}">
+                        <p:selectOneMenu value="#{controlePermissao.dao.maximoObjetos}">
                             <f:selectItem itemValue="3" itemLabel="3"/>
                             <f:selectItem itemValue="5" itemLabel="5"/>
                             <f:selectItem itemValue="10" itemLabel="10"/>
@@ -44,53 +44,49 @@
                             <f:selectItem itemValue="50" itemLabel="50"/>
                             <p:ajax update="listagem"/>
                         </p:selectOneMenu>
-                        <p:commandButton action="#{controleEstado.dao.primeiro()}"
+                        <p:commandButton action="#{controlePermissao.dao.primeiro()}"
                                          title="Primeiro" update="listagem"
                                          icon="pi pi-step-backward"/>
 
-                        <p:commandButton action="#{controleEstado.dao.anterior()}"
+                        <p:commandButton action="#{controlePermissao.dao.anterior()}"
                                          title="Anterior" update="listagem"
                                          icon="pi pi-chevron-left"/>
 
-                        <p:commandButton action="#{controleEstado.dao.proximo()}"
+                        <p:commandButton action="#{controlePermissao.dao.proximo()}"
                                          title="Próximo" update="listagem"
                                          icon="pi pi-chevron-right"/>
 
-                        <p:commandButton action="#{controleEstado.dao.ultimo()}"
+                        <p:commandButton action="#{controlePermissao.dao.ultimo()}"
                                          title="Último" update="listagem"
                                          icon="pi pi-step-forward"/>
                     </p:panelGrid>
                 </div>
 
-                <p:dataTable value="#{controleEstado.dao.listaObjetos}" var="obj"
+                <p:dataTable value="#{controlePermissao.dao.listaObjetos}" var="obj"
                              id="listagem">
                     <f:facet name="header">
-                        <div style="text-align: center;">Lista de Todos os Estados</div>
+                        <div style="text-align: center;">Lista de Todos as Permissões</div>
                     </f:facet>
                     <f:facet name="footer">
-                        <p:outputLabel value="#{controleEstado.dao.mensagemNavegacao()}"/>
+                        <p:outputLabel value="#{controlePermissao.dao.mensagemNavegacao()}"/>
                     </f:facet>
-                    <p:column headerText="ID">
-                        <p:outputLabel value="#{obj.id}"/>
-                    </p:column>
-
                     <p:column headerText="Nome">
                         <p:outputLabel value="#{obj.nome}"/>
                     </p:column>
 
-                    <p:column headerText="UF">
-                        <p:outputLabel value="#{obj.uf}"/>
+                    <p:column headerText="Descrição">
+                        <p:outputLabel value="#{obj.descricao}"/>
                     </p:column>
 
                     <p:column style="text-align: center;" headerText="Ações">
                         <div align="center">
-                            <p:commandButton style="margin-right: 5px;" actionListener="#{controleEstado.alterar(obj.id)}"
+                            <p:commandButton style="margin-right: 5px;" actionListener="#{controlePermissao.alterar(obj.nome)}"
                                              icon="pi pi-pencil"
                                              title="Editar"
                                              update="formEdicao"
                                              process="@this"
                                              oncomplete="PF('dlg').show()"/>
-                            <p:commandButton actionListener="#{controleEstado.excluir(obj.id)}"
+                            <p:commandButton actionListener="#{controlePermissao.excluir(obj.nome)}"
                                              icon="pi pi-trash"
                                              update="@form"
                                              process="@this"
@@ -105,48 +101,42 @@
                       modal="true" width="35%" height="100%">
                 <h:form id="formEdicao" prependId="false">
                     <p:growl/>
+
                     <p:outputPanel class="ui-fluid">
+
                         <div class="p-formgroup p-grid">
-                            <div class="p-field p-col">
+                            <div class="p-field p-col-12">
                                 <p:outputLabel value="Nome" for="txtNome"/>
-                                <p:inputText id="txtNome" required="true"
-                                             value="#{controleEstado.objeto.nome}"
-                                             maxlength="50"
+                                <p:inputText id="txtNome"
+                                             value="#{controlePermissao.objeto.nome}"
+                                             maxlength="50" oninput="value=value.toUpperCase()"
+                                             readonly="#{!controlePermissao.novoObjeto}"
                                              placeholder="Obrigatório"/>
                             </div>
-                            <div class="p-field p-col-2">
-
-                                <p:outputLabel value="UF" for="txtUF"/>
-                                <p:inputText id="txtUF" required="true"
-                                             oninput="value=value.toUpperCase()"
-                                             value="#{controleEstado.objeto.uf}"
-                                             maxlength="2"/>
+                            <div class="p-field p-col-12">
+                                <p:outputLabel value="Descrição da Permissão" for="txtDescricao"/>
+                                <p:inputTextarea id="txtDescricao"
+                                                 value="#{controlePermissao.objeto.descricao}"
+                                                 rows="4" cols="37"
+                                                 placeholder="O que essa permissão pode fazer? Para quem ela é destinada?"/>
                             </div>
                         </div>
 
                         <p:toolbar>
                             <p:toolbarGroup>
-                                <p:outputLabel class="p-pr-2" value="ID: "
-                                               rendered="#{controleEstado.objeto.id != null}"/>
-                                <p:badge value="#{controleEstado.objeto.id}"
-                                         rendered="#{controleEstado.objeto.id != null}"
-                                         styleClass="p-mr-2"></p:badge>
                             </p:toolbarGroup>
-
-                            <p:toolbarGroup align="right">
-                                <div class="p-formgroup-inline">
-                                    <div class="p-field p-mb-0">
-                                        <p:commandButton value="Salvar" icon="pi pi-save"
-                                                         actionListener="#{controleEstado.salvar()}"
-                                                         update="formEdicao formListagem"
-                                                         oncomplete="if(!args.validationFailed){PF('dlg').hide();}"/>
-                                    </div>
-                                    <div class="p-field p-mb-0 p-mr-0">
-                                        <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('dlg').hide()"
-                                                         class="ui-button-secondary" update="formEdicao" process="@this">
-                                            <p:resetInput target="formEdicao"/>
-                                        </p:commandButton>
-                                    </div>
+                            <p:toolbarGroup align="right" class="p-formgroup-inline">
+                                <div class="p-field p-mb-0">
+                                    <p:commandButton value="Salvar" icon="pi pi-save"
+                                                     actionListener="#{controlePermissao.salvar()}"
+                                                     update="formEdicao formListagem"
+                                                     oncomplete="if(!args.validationFailed){PF('dlg').hide();}"/>
+                                </div>
+                                <div class="p-field p-mb-0 p-mr-0">
+                                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('dlg').hide()"
+                                                     class="ui-button-secondary" update="formEdicao" process="@this">
+                                        <p:resetInput target="formEdicao"/>
+                                    </p:commandButton>
                                 </div>
                             </p:toolbarGroup>
                         </p:toolbar>

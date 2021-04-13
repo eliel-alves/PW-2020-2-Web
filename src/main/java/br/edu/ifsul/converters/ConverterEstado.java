@@ -29,7 +29,7 @@ public class ConverterEstado implements Serializable, Converter<Object> {
     // converte da tela para o objeto
     @Override
     public Object getAsObject(FacesContext fc, UIComponent uic, String string) {
-        if(string == null || string.equals("Selecone um registro")) {
+        if(string == null || string.equals("Selecione um registro")) {
             return null;
         }
         return em.find(Estado.class, Integer.parseInt(string));
